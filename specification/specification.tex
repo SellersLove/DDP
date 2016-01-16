@@ -1,0 +1,83 @@
+\RequirePackage[l2tabu,orthodox]{nag}  % warn about common LaTeX pitfalls
+\RequirePackage[ascii]{inputenc}  % input is 7-bit ASCII
+\RequirePackage{fixltx2e}  % fix LaTeX2e kernel bugs
+
+\documentclass[11pt,twoside]{article}
+\usepackage{color}
+\usepackage{array}
+\usepackage{calc}  % arithmetic in length parameters
+\usepackage{enumitem}  % more control over list formatting
+\usepackage{fancyhdr}  % simpler headers and footers
+\usepackage[margin=1in]{geometry}  % page layout
+\usepackage{lastpage}  % for last page number
+\usepackage{relsize}  % easier font size changes
+\usepackage[normalem]{ulem}  % smarter underlining
+\usepackage{url}  % verb-like typesetting of URLs
+%\usepackage{xfrac}  % nicer looking simple fractions for text and math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{circuitikz}
+\usepackage{longtable}
+% Set up fonts.
+\usepackage[T1]{fontenc}  % use true 8-bit fonts
+\usepackage{slantsc}  % allow slanted small-caps
+\usepackage{microtype}  % perform various font optimizations
+% Use Palatino-based monospace instead of kpfonts' default.
+%\usepackage{newpxtext}
+\ttfamily
+\DeclareFontShape{T1}{\ttdefault}{m}{scsl}{<->ssub*\ttdefault/m/sc}{}
+\DeclareFontShape{T1}{\ttdefault}{b}{scsl}{<->ssub*\ttdefault/b/sc}{}
+% "Kepler" fonts.
+\usepackage[nott,notextcomp]{kpfonts}
+% Use curvier Latin Modern brackets instead of kpfonts' glyphs.
+\DeclareSymbolFont{lmsymb}     {OMS}{lmsy}{m}{n}
+\DeclareSymbolFont{lmlargesymb}{OMX}{lmex}{m}{n}
+\DeclareMathDelimiter{\rbrace}{\mathclose}{lmsymb}{"67}{lmlargesymb}{"09}
+\DeclareMathDelimiter{\lbrace}{\mathopen}{lmsymb}{"66}{lmlargesymb}{"08}
+
+% Page layout: stretch text to fill up page.
+\addtolength\footskip{.25\headheight}
+\flushbottom
+
+% Common list settings.
+
+% Common macros.
+\input{macros}
+\newcommand*\st{\mathrel{|}}  % "such that" for set extension
+
+% Headings.
+\pagestyle{fancy}
+\let\headrule\empty
+\let\footrule\empty
+\chead{\large\scshape Specification}
+\lfoot{\scshape Dept.\@ of Computer Science, University of Toronto,
+       St.~George Campus}
+\cfoot{}
+\rfoot{\scshape page \thepage\space of \pageref{LastPage}}
+
+
+\begin{document}
+
+\begin{enumerate}[leftmargin=0pt]
+\item File description
+	\begin{itemize}
+	\item First line of data specifies the size of matrix, in our case $100 \times 120$;
+	\item Data is stored row by row, (i.e, first row is stored from line \#2 to line \#121);
+	\item From second line each line stores the colour for a pixel in RGB from (i.e line $m \geq 1$ stores the colour info for the pixel at position $(quotient(\frac{m}{100}), remainder(\frac{m}{100}))$);
+	\item Light direction: $(0, 1 , -1)$;
+	\item Plane: centred at $(0,0,0)$ with size ($25mm \times 30mm $) and resolution($100 \times 120$);
+	\item Dent equation: $\frac{x^2}{a^2} + \frac{y^2}{b^2} +\frac{z^2}{c^2} = 1$, where $z \leq 0$;
+	\item Period on plane is 1.
+	\end{itemize}
+\item File infe
+        \begin{longtable}{|>{\tiny}p{0.5in}|>{\tiny} p{0.7in}| >{\tiny}p{0.7in}|>{\tiny}p{0.7in}|}
+        \hline
+       	FileName& dent width (a)& dent length (b) & dent depth (c) \\[0.1in]\hline
+	$data1$&$0.05$&$0.05$&$0.01$\\[0.1in]\hline
+	$data2$&$0.1  $&$0.1$&$0.02$\\[0.1in]\hline
+	$data3$&$0.2  $&$0.2$&$0.04$\\[0.1in]\hline
+	$data4$&$0.4  $&$0.4$&$0.08$\\[0.1in]\hline
+	\end{longtable} 
+\end{enumerate}
+
+\end{document}
