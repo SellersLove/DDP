@@ -6,6 +6,7 @@ public:
 	virtual bool intersect( Ray3D&, const Matrix4x4&, const Matrix4x4& ) = 0;
 };
 
+
 class UnitSquare : public SceneObject {
 public:
 	bool intersect( Ray3D& ray, const Matrix4x4& worldToModel,
@@ -25,4 +26,11 @@ private:
 	double _a;
 	double _b;
 	double _c;
+};
+
+
+class CarSurface : public SceneObject {
+public:
+	bool intersect( Ray3D& ray, const Matrix4x4& worldToModel,
+			const Matrix4x4& modelToWorld );
 };

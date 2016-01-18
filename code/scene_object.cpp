@@ -35,6 +35,7 @@
 //   return false;
 
 // }
+
 bool UnitSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
     const Matrix4x4& modelToWorld ) {
 
@@ -232,9 +233,11 @@ bool UnitDentSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
       
     if(x_check[0] >= -_a && x_check[0] <= _a && x_check[1] >= -_b
       && x_check[1] <= _b ){
+      
       if(ellipsoidIntersect(ray, worldToModel, modelToWorld, _a, _b, _c)){
         return true;
       }
+      
       else{
         return false;
       }
@@ -249,10 +252,91 @@ bool UnitDentSquare::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
       ray.intersection = intersection;
       ray.intersection.normal.normalize();
       return true;  
-    }
-    
-  }
+    }  
+  }  
+  
   return false;
+
 }
 
+
+// // x 30mm y 25mm z 4mm
+// bool CarSurface::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
+//     const Matrix4x4& modelToWorld ){
+//   double t_value;
+//   //Ray3D ray = Ray3D(worldToModel * ray.origin, worldToModel * ray.dir);
+
+//   double a = - ray.dir[0] * ray.dir[0] / 156.25; 
+//   double b = - (2.0 * ray.dir[0] * ray.origin[0]) / 156.25 - ray.dir[2];
+//   double c = (625.0 - ray.origin[0] * ray.origin[0]) / 156.25 - ray.origin[2];
+
+//   std::cout << ray.origin[0] << "  "<<ray.origin[1] << " " << ray.origin[2]<<"\n";
+//   double discriminant = b * b - 4 * a * c;
+  
+//   if (discriminant >= 0 && ray.intersection.none){
+    
+//     double root1 = ( -b + sqrt(discriminant) ) / (2 * a);
+//     double root2 = ( -b - sqrt(discriminant) ) / (2 * a);
+//     if(root1 > 0 || root2 > 0){     
+//       if(root1 > 0 && root2 > 0){       
+//         if(root1 <= root2){
+//           t_value = root1;
+//         } 
+//         else {
+//           t_value = root2;
+//         }
+//       }
+//       else if( root1 > 0){
+//         t_value = root1;
+//       }
+//       else{
+//         t_value = root2;
+//       } 
+//       //t_value = (25 - ray.origin[0]) * (ray.origin[0] + 25) / 156.25 - ray.origin[2];
+//       Point3D x_check = ray.point_at(t_value);
+      
+//       if(x_check[0] >= 0.0 && x_check[0] <= 25.0 && 
+//         x_check[1] >= -15.0 && x_check[1] <= 15.0 && x_check[2] <= 4.0 
+//         && x_check[2] >= 0.0 ){
+//           Intersection intersection;
+//           intersection.point = modelToWorld * x_check;
+//           intersection.normal = worldToModel.transpose() * Vector3D(
+//           x_check[0], x_check[1], x_check[2]);
+//           intersection.t_value = t_value;
+//           intersection.none = false;
+//           ray.intersection = intersection;
+//           ray.intersection.normal.normalize();
+//           return true;
+//       }
+//     }
+//   }
+//   return false;
+// }
+
+bool CarSurface::intersect( Ray3D& ray, const Matrix4x4& worldToModel,
+    const Matrix4x4& modelToWorld ){
+  double t_value;
+  double width = 30;
+  double  t = width * width /4;
+  if (ray.intersection.none){
+      t_value = ((width - ray.origin[1]) * (ray.origin[1] + width) / 
+        t - ray.origin[2])/ ray.dir[2];
+      Point3D x_check = ray.point_at(t_value);
+      
+      if(x_check[0] >=-12.5 && x_check[0] <= 12.5 && 
+        x_check[1] >= 0.0 && x_check[1] <= 30.0 && x_check[2] <= 4.0 
+        && x_check[2] >= 0.0 ){
+          Intersection intersection;
+          intersection.point = modelToWorld * x_check;
+          intersection.normal = worldToModel.transpose() * Vector3D(
+          x_check[0], x_check[1], x_check[2]);
+          intersection.t_value = t_value;
+          intersection.none = false;
+          ray.intersection = intersection;
+          ray.intersection.normal.normalize();
+          return true;
+      }
+    }
+  return false;
+}
 

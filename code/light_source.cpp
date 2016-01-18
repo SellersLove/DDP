@@ -42,7 +42,6 @@ void Projector::shade( Ray3D& ray ) {
     }
     Colour col = ray.col;
     ray.col  = (ray.brightness * ray.col);
-    //std::cout << col[0]*255 << " " << col[1]*255<< " "<<col[2]*255<<"\n";
     ray.col.clamp();
 
 }
@@ -237,7 +236,7 @@ void ProjectorParaLight::shade(Ray3D& ray){
     else{
         ray.col = ray.col + colour;
     }
-    //ray.col  = ray.brightness * ray.col;
+    ray.col  = ray.brightness * ray.col;
     ray.col.clamp();
 
 }
@@ -246,7 +245,7 @@ void ProjectorParaLight::shade(Ray3D& ray){
 //  T = M * tau
 void ProjectorParaLight::projectContinuous(Ray3D& ray, int M, double tau){
 
-    double d = 12.5;
+    double d = 25.0;
     // opposite direction of light direction
     Vector3D dir = - _direction;
     Point3D origin = ray.intersection.point;
@@ -254,10 +253,14 @@ void ProjectorParaLight::projectContinuous(Ray3D& ray, int M, double tau){
     
     Ray3D projectRay = Ray3D(origin, dir);
     
-    double t_value = (origin[1] + d - origin[2])/2.0;
+    //plane normal(0,1,-1) plane: -x + z = d
+    //double t_value = (origin[0] + d - origin[2])/2.0;
+    double t_value = ( d + projectRay.origin[1] - projectRay.origin[2] ) 
+    / (projectRay.dir[2] - projectRay.dir[1]);
+      
     Point3D x_check = projectRay.point_at(t_value);
 
     float omage = 2 * M_PI / (M * tau);
-    ray.brightness = 1;
-    //ray.brightness = (cos( omage * x_check[2]) + 1.0) / 2.0;
+    //ray.brightness = 1;
+    ray.brightness = (cos( omage * x_check[2]) + 1.0) / 2.0;
 }

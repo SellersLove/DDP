@@ -32,7 +32,6 @@ public:
 	virtual void projectContinuous(Ray3D& ray, int M, double tau) = 0;
 };
 
-
 class Projector : public LightSource {
 
 public:

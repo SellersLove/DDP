@@ -293,11 +293,11 @@ void Raytracer::renderParallel( double width, double height, int resWidth, int r
 	_scrWidth = resWidth;
 	_scrHeight = resHeight;
 
-	double cameraHeight = 1.0;
+	double cameraHeight = 15.0;
 	double factor_x = width / resWidth;
 	double factor_y	= height / resHeight;
 
-	int numRay = 5;
+	int numRay = 3;
 	int num = 2 * numRay - 1;
 	double frac_x = factor_x / ( numRay * 2);
 	double frac_y = factor_y / ( numRay * 2);
@@ -320,20 +320,18 @@ void Raytracer::renderParallel( double width, double height, int resWidth, int r
 			ray.dir.normalize();
 			double brightness = 0.0;
 			imagePlane[2] = cameraHeight;
-			imagePlane[0] = (-double(width) / 2) + factor_x * j 
-									+ 0.125;
-			imagePlane[1] = (-double(height) / 2) + factor_y * i 
-									+ 0.125;
 			ray.origin = imagePlane;
 			//col = shadeRay(ray);			
 			for (int u = -(numRay-1); u < numRay; u++){
 				for (int v = -(numRay-1); v < numRay; v++){
 					imagePlane[0] = (-double(width) / 2) + factor_x * j 
-									+ 0.125 + frac_x * u;
-					imagePlane[1] = (-double(height) / 2) + factor_y * i 
-									+ 0.125 + frac_x * v;
-					
+					 				+ 0.125 + frac_x * u;
+					//imagePlane[0] = factor_x * j + 0.125 + frac_x * u;
+					// imagePlane[1] = (-double(height) / 2) + factor_y * i 
+					//  				+ 0.125 + frac_x * v;
+					imagePlane[1] = factor_y * i + 0.125 + frac_x * v;
 					// Calculate and set direction
+					
 					ray.origin = imagePlane;
 					col = col + shadeRay(ray);
 					shadeRay(ray);
@@ -342,21 +340,21 @@ void Raytracer::renderParallel( double width, double height, int resWidth, int r
 			}
 			
 			Point3D intersection =  ray.intersection.point;
-			//col = (1./(num * num)) * col;
+			col = (1./(num * num)) * col;
 			brightness = brightness / (num * num);
-			col = brightness * col;
-			// _rbuffer[i*_scrWidth+j] = int(col[0]*255);
-			// _gbuffer[i*_scrWidth+j] = int(col[1]*255);
-			// _bbuffer[i*_scrWidth+j] = int(col[2]*255);
-			_rbuffer[i*_scrWidth+j] = 156.303*brightness;
-			_gbuffer[i*_scrWidth+j] = 156.303*brightness;
-			_bbuffer[i*_scrWidth+j] = 156.303*brightness;
+			_rbuffer[i*_scrWidth+j] = int(col[0]*255);
+			_gbuffer[i*_scrWidth+j] = int(col[1]*255);
+			_bbuffer[i*_scrWidth+j] = int(col[2]*255);
+			// _rbuffer[i*_scrWidth+j] = 156.303*brightness;
+			// _gbuffer[i*_scrWidth+j] = 156.303*brightness;
+			// _bbuffer[i*_scrWidth+j] = 156.303*brightness;
 			
 			if (myfile.is_open()){
 				myfile.precision(24);
     			myfile << col[0]*255<< " "<< col[1]*255<< " "<< col[2]*255 << "\n";
     			//myfile << brightness<< " "<< brightness<< " "<< brightness << "\n";
   			}
+
   			// if(intersection[0] <= 0.1 && intersection[0] >= -0.1 && intersection[1] <= 0.1
   			// && intersection[1] >= -0.1 ){
   			// 	std::cout << col[0]*255 << " " << col[1]*255<< " "<<col[2]*255<<"\n";
@@ -409,12 +407,14 @@ int main(int argc, char* argv[])
 	// Point3D pos = light->get_position();
 	// Defines a para light source.
 	
+	// ParaLight 
 	ProjectorParaLight* paraLight = new ProjectorParaLight ( Vector3D(0, 1, -1) , 
 		Colour(0.9, 0.9, 0.9) );
 	
 	raytracer.addParaLightSource(paraLight);
 	
-	SceneDagNode* plane = raytracer.addObject( new UnitDentSquare(), &silver );
+	//SceneDagNode* plane = raytracer.addObject( new UnitDentSquare(), &silver );
+	SceneDagNode* plane = raytracer.addObject( new CarSurface(), &silver );
 	
 	raytracer.renderParallel(width, height, resWidth, resHeight, view, (char*)"view.bmp");
 
